@@ -11,14 +11,17 @@ app.set("view engine", "ejs");
 
 var campgroundSchema = new mongoose.Schema({
    name: String,
-   image: String
+   image: String,
+   description: String
 });
 
 var Campground = mongoose.model("Campground", campgroundSchema);
 
 // Campground.create(
 //     {
-//         name: "Montara", image: "http://www.northshorevisitor.com/wp-content/uploads/2015/05/grand-marais-campground-1.jpg"
+//         name: "Montara", 
+//         image: "http://www.northshorevisitor.com/wp-content/uploads/2015/05/grand-marais-campground-1.jpg",
+//         description: "This is a huge granite hill, no bathrooms with no water"
         
 //     }, function(err, campground){
 //         if(err){
@@ -38,15 +41,19 @@ app.get("/campgrounds", function(req, res){
         if(err){
             console.log("error");
         } else {
-            res.render("campgrounds", {campgrounds:allCampgrounds});
+            res.render("index", {campgrounds:allCampgrounds});
         }
     });
 });
 
+
+//CREATE - add new campground to DB
 app.post("/campgrounds", function(req, res){
     var name = req.body.name;
     var image = req.body.image;
-    var newCampground = {name: name, image: image}
+    var desc = req.body.description;
+    
+    var newCampground = {name: name, image: image, description: desc}
     
     Campground.create(newCampground, function(err, newlyCreated){
        if(err){
@@ -57,8 +64,21 @@ app.post("/campgrounds", function(req, res){
     });
 });
 
+//NEW - show form to create new campground
 app.get("/campgrounds/new", function(req, res){
    res.render("new.ejs");
+});
+
+//SHOW - shows more info about one campground
+app.get("/campgrounds/:id", function(req, res){
+    Campground.findById(req.params.id, function(err, foundCampground){
+        if(err){
+            console.log(err);
+        } else {
+            res.render("show", {campground: foundCampground});
+        }
+    });
+
 });
 
 
