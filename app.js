@@ -32,10 +32,13 @@ var Campground = mongoose.model("Campground", campgroundSchema);
 //     });
 
 
+//Home page
 app.get("/", function(req, res){
     res.render("landing")
 });
 
+
+//INDEX - display list of all campgrounds
 app.get("/campgrounds", function(req, res){
     Campground.find({}, function(err, allCampgrounds){
         if(err){
