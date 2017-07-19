@@ -1,35 +1,16 @@
 var express = require("express");
 var app = express();
-
 var bodyParser = require("body-parser");
 var mongoose = require("mongoose");
+var Campground = require("./models/campground");
+var seedDB = require("./seeds");
+
 
 mongoose.Promise = global.Promise;
 mongoose.connect("mongodb://localhost/campgrounds");
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
-
-var campgroundSchema = new mongoose.Schema({
-   name: String,
-   image: String,
-   description: String
-});
-
-var Campground = mongoose.model("Campground", campgroundSchema);
-
-// Campground.create(
-//     {
-//         name: "Montara", 
-//         image: "http://www.northshorevisitor.com/wp-content/uploads/2015/05/grand-marais-campground-1.jpg",
-//         description: "This is a huge granite hill, no bathrooms with no water"
-        
-//     }, function(err, campground){
-//         if(err){
-//             console.log("error");
-//         } else {
-//             console.log(campground);
-//         }
-//     });
+seedDB();
 
 
 //Home page
@@ -74,7 +55,7 @@ app.get("/campgrounds/new", function(req, res){
 
 //SHOW - shows more info about one campground
 app.get("/campgrounds/:id", function(req, res){
-    Campground.findById(req.params.id, function(err, foundCampground){
+    Campground.findById(req.params.id).populate("comments").exec(function(err, foundCampground){
         if(err){
             console.log(err);
         } else {
