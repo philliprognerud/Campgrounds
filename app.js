@@ -11,6 +11,7 @@ mongoose.Promise = global.Promise;
 mongoose.connect("mongodb://localhost/campgrounds");
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
+app.use(express.static(__dirname + "/public"));
 seedDB();
 
 
